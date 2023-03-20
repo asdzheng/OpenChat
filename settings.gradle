@@ -1,0 +1,29 @@
+pluginManagement {
+    repositories {
+        google()
+        gradlePluginPortal()
+        maven { url 'https://jitpack.io' }
+        maven {
+            url = "http://repo.maven.apache.org/maven2"
+            allowInsecureProtocol = true
+        }
+        mavenCentral()
+
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        gradlePluginPortal()
+        maven { url 'https://jitpack.io' }
+        maven {
+            url = "https://repo.maven.apache.org/maven2"
+//            allowInsecureProtocol = true
+        }
+        mavenCentral()
+
+    }
+}
+rootProject.name = "OpenChat"
+include ':app'

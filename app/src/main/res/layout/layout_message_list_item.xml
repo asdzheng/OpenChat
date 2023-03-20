@@ -1,0 +1,19 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true">
+
+
+    <com.asdzheng.openchat.ui.view.MarkedView
+        android:id="@+id/tv_chat_reply_markdown_message"
+        android:layout_width="match_parent"
+        android:layout_marginEnd="80dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:background="@drawable/bg_user_chatgpt"
+        />
+
+</FrameLayout>

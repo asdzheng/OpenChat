@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name" translatable="false">ChatGPT</string>
+    <string name="default_openai_model" translatable="false">gpt-3.5-turbo</string>
+
+    
+    <string name="second">s</string>
+    <string name="min">min</string>
+    <string name="request_time">Request time</string>
+    <string name="enter_message">Enter chatMessage</string>
+    <string name="send">Send</string>
+    <string name="view">View</string>
+    <string name="view_more">View more</string>
+    <string name="share">Share</string>
+    <string name="clear">Clear Messages</string>
+    <string name="clear_desc">Clear the context and reset the current topic.</string>
+    <string name="you">You</string>
+    <string name="bot">Bot</string>
+    <string name="delete">Delete</string>
+    <string name="settings">Settings</string>
+    <string name="api_key">API Key</string>
+    <string name="privacy">Privacy</string>
+    <string name="others">Others</string>
+    <string name="timeout">Timeout</string>
+    <string name="parameters">Parameters</string>
+    <string name="temperature">Temperature</string>
+    <string name="max_tokens">Max Tokens</string>
+    <string name="api_key_missing">API Key is missing, please go to Settings.</string>
+    <string name="echo">Echo</string>
+    <string name="model">Model</string>
+    <string name="tell_me_more">Tell me more</string>
+    <string name="save">Save</string>
+    <string name="save_desc">Save this chatMessage to %1$s</string>
+    <string name="file_name">Filename</string>
+    <string name="save_success">Message is saved in %1$s</string>
+    <string name="my_files">My Files</string>
+    <string name="context">Context</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="casual_chat">Casual Chat</string>
+</resources>

@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/marked.js"></script>
+    <!--    <script src="js/highlight.pack.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlightjs-line-numbers.js@latest/dist/highlightjs-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlightjs-lang.js@latest/dist/highlightjs-lang.min.js"></script>
+
+    <script src="js/md_preview.js"></script>
+
+    <link rel="stylesheet" href="css/bootstrap.css" />
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
+
+        body,
+        html {
+            background: transparent;
+            font-size: 16px;
+            font-family: "Alata", sans-serif;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        ul,
+        ol {
+            padding-left: 15px;
+        }
+
+        pre,
+        code {
+            font-family: "JetBrains Mono", monospace !important;
+            border-radius: 10px !important;
+        }
+
+        pre {
+            font-size: 14px;
+            padding: 0px;
+        }
+
+        table:not(pre table) {
+            border-collapse: collapse;
+            width: 100%;
+            overflow-x: auto;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        th:not(pre th),
+        td:not(pre td) {
+            text-align: left;
+            padding: 8px;
+            border-width: .5px;
+            border-style: solid;
+            white-space: nowrap;
+        }
+
+        th:not(pre th) {}
+
+        .hljs-ln-numbers {
+            padding-right: 10px !important;
+            opacity: .25 !important;
+            text-align: right;
+        }
+
+        .hljs-lang {
+            padding: 5px 0px 0px 10px;
+            color: grey;
+            opacity: .6;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .copy-btn {
+            border: none;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container" id="preview"></div>
+
+    <script>
+
+        function init() {
+
+        }
+
+        function setLinkColor(color) {
+            let links = document.getElementsByTagName('a');
+            for (let i = 0; i < links.length; i++) {
+                links[i].style.color = color;
+            }
+        }
+
+        function setLightTheme() {
+            let link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = 'css/theme/atom_one_light.css';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+
+        function setDarkTheme() {
+            let link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = 'css/theme/atom_one_dark.css';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+
+        function setCopyCodeButton() {
+            let pre = document.querySelectorAll('.hljs');
+
+            pre.forEach(function (pre) {
+                if (pre.nextElementSibling && pre.nextElementSibling.classList.contains("copy-btn")) {
+                    return;
+                } else {
+                    let copyBtn = document.createElement('button');
+                    copyBtn.className = "copy-btn";
+                    copyBtn.textContent = "Copy";
+
+                    pre.insertAdjacentElement('afterend', copyBtn);
+                    copyBtn.addEventListener('click', function () {
+                        let range = document.createRange();
+                        range.selectNode(pre);
+                        getSelection().addRange(range);
+                        document.execCommand("copy");
+                        getSelection().removeAllRanges();
+                    });
+                }
+            });
+        }
+
+    </script>
+</body>
+
+</html>
