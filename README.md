@@ -1,0 +1,2 @@
+# OpenChat
+Android ChatGTP application
