@@ -2,16 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="end"
-    android:animateLayoutChanges="true">
+    >
 
 
     <FrameLayout
         android:id="@+id/fl_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
         android:background="@drawable/bg_user_input"
+        android:layout_gravity="end"
+        android:layout_marginStart="80dp"
         >
 
         <TextView
@@ -20,12 +20,12 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:gravity="end"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            tools:text="test" />
+            android:textIsSelectable="true"
+            tools:text="test dsakdsakldjsalkdjskal kldsja lkd dlskaj dlk jasldk aslkd jdksa dlkjsa dkj salkdaslk djaslkj ddlks jald kjsaldksa jdlks adlk ja" />
     </FrameLayout>
 
 </FrameLayout>

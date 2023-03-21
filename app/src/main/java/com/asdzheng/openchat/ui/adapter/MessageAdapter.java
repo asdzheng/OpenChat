@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.asdzheng.openchat.R;
+import com.asdzheng.openchat.db.RoomHelper;
 import com.asdzheng.openchat.db.model.ChatMessage;
 import com.asdzheng.openchat.ui.view.MarkedView;
 import com.bluewhaleyt.component.dialog.DialogUtil;
@@ -39,7 +40,6 @@ public class MessageAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Context context = holder.itemView.getContext();
         ChatMessage chatMessage = mChatMessages.get(position);
         if(holder instanceof ChatMessageViewHolder) {
             ((ChatMessageViewHolder)holder).chatMessageView.setMDText(chatMessage.getContent());
@@ -71,7 +71,7 @@ public class MessageAdapter extends RecyclerView.Adapter<ViewHolder> {
             dialog.setTitle(context.getString(R.string.delete));
             dialog.setMessage(mChatMessages.get(position).getContent());
             dialog.setPositiveButton(android.R.string.ok, ((d, i) -> {
-                removeMessage(context, position);
+                removeMessage(position);
             }));
             dialog.setNegativeButton(android.R.string.cancel, null);
             dialog.create();
@@ -80,9 +80,10 @@ public class MessageAdapter extends RecyclerView.Adapter<ViewHolder> {
         });
     }
 
-    private void removeMessage(Context context, int position) {
-        mChatMessages.remove(position);
+    private void removeMessage(int position) {
+        ChatMessage chatMessage = mChatMessages.remove(position);
         notifyItemRemoved(position);
+        RoomHelper.Companion.getInstance().chatMessageDao().delete(chatMessage);
     }
     public boolean isEmpty() {
         return mChatMessages.isEmpty();

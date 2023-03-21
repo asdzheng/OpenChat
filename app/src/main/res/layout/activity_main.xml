@@ -18,7 +18,6 @@
         android:id="@+id/layout_rv_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="5dp"
         android:layout_weight="1">
 
         <com.l4digital.fastscroll.FastScrollRecyclerView
@@ -32,13 +31,6 @@
             app:handleColor="?colorSurfaceVariant" />
 
     </FrameLayout>
-
-    <View
-        android:id="@+id/spacer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/layout_message_input_container"
@@ -58,24 +50,38 @@
             android:imeOptions="flagNoExtractUi"
             android:paddingStart="16dp"
             android:paddingTop="10dp"
+            android:focusableInTouchMode="true"
             android:paddingEnd="16dp"
             android:paddingBottom="10dp"
             android:textColor="?colorOnSurfaceVariant"
             android:maxHeight="250dp"
-            />
+            android:autofillHints="feel free to talk with chatgpt" />
 
         <Button
             android:id="@+id/btn_send"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="bottom"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             app:icon="@drawable/ic_baseline_send_24"
             app:iconGravity="textEnd"
             app:iconPadding="2dp" />
 
-    </LinearLayout>
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress_circular"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:indeterminate="true"
+            app:indicatorColor="@android:color/darker_gray"
+            app:indicatorSize="30dp"
+            app:trackThickness="3dp"
+            android:visibility="gone"
+            />
 
+    </LinearLayout>
 
 </LinearLayout>

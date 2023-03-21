@@ -37,7 +37,7 @@ public final class MarkedView extends WebView {
     private static final String IMAGE_PATTERN = "!\\[(.*)\\]\\((.*)\\)";
 
     private String previewText;
-    private boolean codeScrollDisable;
+    private boolean codeScrollDisable= true;
 
     public MarkedView(Context context) {
         this(context, null);
@@ -55,6 +55,7 @@ public final class MarkedView extends WebView {
     @SuppressLint("SetJavaScriptEnabled")
     private void init(){
         // default browser is not called.
+        setVerticalScrollBarEnabled(false);
         setWebViewClient(new WebViewClient(){
             public void onPageFinished(WebView view, String url){
                 sendScriptAction();

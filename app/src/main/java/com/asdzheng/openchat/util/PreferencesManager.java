@@ -25,10 +25,6 @@ public class PreferencesManager {
         return getPrefs().getString("pref_openai_temperature", "0.2");
     }
 
-    public static String getOpenAIMaxTokens() {
-        return getPrefs().getString("pref_openai_max_tokens", "4096");
-    }
-
     public static boolean isOpenAIEcho() {
         return getPrefs().getBoolean("pref_openai_echo", false);
     }

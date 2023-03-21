@@ -12,6 +12,7 @@
     <string name="view_more">View more</string>
     <string name="share">Share</string>
     <string name="clear">Clear Messages</string>
+    <string name="clear_confirm">Are you sure to clear all of messages?</string>
     <string name="clear_desc">Clear the context and reset the current topic.</string>
     <string name="you">You</string>
     <string name="bot">Bot</string>

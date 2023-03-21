@@ -1,14 +1,19 @@
 package com.asdzheng.openchat.ui
 
+import android.content.DialogInterface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.View.OnScrollChangeListener
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
 import com.asdzheng.openchat.R
 import com.asdzheng.openchat.databinding.ActivityMainBinding
 import com.asdzheng.openchat.db.RoomHelper
@@ -16,17 +21,19 @@ import com.asdzheng.openchat.db.model.Chat
 import com.asdzheng.openchat.db.model.ChatMessage
 import com.asdzheng.openchat.net.OpenClient
 import com.asdzheng.openchat.ui.adapter.MessageAdapter
-import com.asdzheng.openchat.util.JsonUtil
 import com.asdzheng.openchat.util.DataHelper
+import com.asdzheng.openchat.util.JsonUtil
 import com.asdzheng.openchat.util.PreferencesManager
 import com.bluewhaleyt.common.DynamicColorsUtil
 import com.bluewhaleyt.common.IntentUtil
+import com.bluewhaleyt.component.dialog.DialogUtil
 import com.bluewhaleyt.component.snackbar.SnackbarUtil
 import com.unfbx.chatgpt.entity.chat.ChatCompletion
 import com.unfbx.chatgpt.entity.chat.ChatCompletionResponse
 import com.unfbx.chatgpt.entity.chat.Message.Role
 import com.unfbx.chatgpt.sse.ConsoleEventSourceListener
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.newSingleThreadContext
 import lombok.SneakyThrows
 import okhttp3.Response
@@ -75,7 +82,15 @@ class MainActivity : BaseActivity() {
         chat = DataHelper.generateDefaultChat(getString(R.string.casual_chat), getString(R.string.casual_chat))
         loadHistoryData()
         setupChatList()
-        binding.btnSend.setOnClickListener { sendMessage() }
+        binding.btnSend.setOnClickListener {
+            sendMessage()
+        }
+        binding.etMessage.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus ) {
+                binding.etMessage.postDelayed({scrollToEnd()},200)
+            }
+        }
+
         val gd = GradientDrawable()
         val dynamic = DynamicColorsUtil(this)
         gd.setColor(dynamic.colorPrimaryContainer)
@@ -84,11 +99,30 @@ class MainActivity : BaseActivity() {
         binding.etMessage.background = gd
     }
 
+    private fun scrollToEnd(isSmooth: Boolean = true) {
+       if( mChatMessages.isNullOrEmpty().not()) {
+           if(isSmooth) {
+               binding.rvChatList.smoothScrollToPosition(mChatMessages!!.size-1)
+           } else {
+               binding.rvChatList.scrollToPosition(mChatMessages!!.size-1)
+           }
+        }
+    }
+
     private fun loadHistoryData() {
         threadPool.executor.execute {
             mChatMessages = RoomHelper.getInstance().chatMessageDao().queryAll()
             runOnUiThread {
                 adapter.setMessageList(mChatMessages)
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                scrollToEnd(false)
+                binding.etMessage.requestFocus()
+                binding.etMessage.postDelayed(
+                    {
+                        imm.showSoftInput(binding.etMessage, 0)
+                    }
+                    , 500
+                )
             }
         }
     }
@@ -102,9 +136,22 @@ class MainActivity : BaseActivity() {
         binding.rvChatList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL).apply {
             getDrawable(R.drawable.divider)?.let { setDrawable(it) }
         })
-
         binding.rvChatList.adapter = adapter;
         adapter.setMessageList(mChatMessages);
+        binding.rvChatList.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if(SCROLL_STATE_DRAGGING == newState) {
+                    val inputMethodManager =
+                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                   inputMethodManager.hideSoftInputFromWindow(
+                        binding.etMessage.windowToken,
+                        0
+                    )
+                    binding.etMessage.clearFocus()
+                }
+            }
+        })
     }
 
 
@@ -117,10 +164,24 @@ class MainActivity : BaseActivity() {
         when (item.itemId) {
             R.id.menu_settings -> IntentUtil.intent(this, SettingsActivity::class.java)
             R.id.menu_clear_messages -> {
-                threadPool.cancel()
-                mChatMessages = mutableListOf()
-                adapter.setMessageList(mChatMessages)
-                RoomHelper.getInstance().chatMessageDao().deleteAll(chat.title!!)
+                DialogUtil(this, getString(R.string.clear)).apply {
+                    setMessage(getString(R.string.clear_confirm))
+                    setCancelable(true)
+                    setPositiveButton(android.R.string.ok
+                    ) { _: DialogInterface?, _: Int ->
+                        threadPool.cancel()
+                        mChatMessages = mutableListOf()
+                        adapter.setMessageList(mChatMessages)
+                        RoomHelper.getInstance().chatMessageDao().deleteAll(chat.title!!)
+                    }
+                    setNegativeButton(android.R.string.cancel
+                    ) { _: DialogInterface?, _: Int ->
+                        dismiss()
+                    }
+                    build()
+                    show()
+                }
+
             }
         }
         return super.onOptionsItemSelected(item)
@@ -129,6 +190,7 @@ class MainActivity : BaseActivity() {
     private fun sendMessage() {
         val userInput = binding.etMessage.text.toString()
         if (!TextUtils.isEmpty(userInput)) {
+            showLoading()
             threadPool.executor.execute {
                 val userInputMessage = generateMessage(userInput, Role.USER.name)
                 RoomHelper.getInstance().chatMessageDao().insert(userInputMessage)
@@ -168,13 +230,13 @@ class MainActivity : BaseActivity() {
                             chatMessage?.apply {
                                 RoomHelper.getInstance().chatMessageDao().insert(this)
                             }
-                            countDownLatch.countDown()
+                            messageEnd(countDownLatch)
                         }
                     }
 
                     override fun onClosed(eventSource: EventSource) {
                         super.onClosed(eventSource)
-                        countDownLatch.countDown()
+                        messageEnd(countDownLatch)
                     }
 
                     @SneakyThrows
@@ -184,7 +246,7 @@ class MainActivity : BaseActivity() {
                         response: Response?
                     ) {
                         super.onFailure(eventSource, t, response)
-                        countDownLatch.countDown()
+                        messageEnd(countDownLatch)
                     }
                 }
 
@@ -192,7 +254,6 @@ class MainActivity : BaseActivity() {
                     ChatCompletion.builder()
                         .messages(DataHelper.getMessageContext(chat.prompt!!, chat.title!!))
                         .model(PreferencesManager.getOpenAIModel())
-                        .maxTokens(PreferencesManager.getOpenAIMaxTokens().toInt())
                         .stream(false)
                         .temperature(PreferencesManager.getOpenAITemperature().toDouble())
                         .build()
@@ -206,6 +267,23 @@ class MainActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    private fun messageEnd(countDownLatch: CountDownLatch) {
+        countDownLatch.countDown()
+        runOnUiThread {
+            hideLoading()
+        }
+    }
+
+    private fun showLoading() {
+        binding.progressCircular.visibility = View.VISIBLE
+        binding.btnSend.visibility = View.GONE
+    }
+
+    private fun hideLoading() {
+        binding.progressCircular.visibility = View.GONE
+        binding.btnSend.visibility = View.VISIBLE
     }
 
     private fun addMessage(chatMessage: ChatMessage) {

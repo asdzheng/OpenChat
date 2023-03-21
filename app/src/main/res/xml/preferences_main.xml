@@ -36,14 +36,6 @@
             app:useSimpleSummaryProvider="true"
             app:defaultValue="0"/>
 
-        <EditTextPreference
-            app:key="pref_openai_max_tokens"
-            app:title="@string/max_tokens"
-            app:icon="@drawable/ic_outline_token_24"
-            app:useSimpleSummaryProvider="true"
-            app:defaultValue="4096"
-            />
-
         <com.bluewhaleyt.component.preferences.material3.Material3SwitchPreference
             app:key="pref_openai_echo"
             app:title="@string/echo"
