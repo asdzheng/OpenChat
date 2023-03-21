@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.asdzheng.openchat.R;
 import com.asdzheng.openchat.db.RoomHelper;
 import com.asdzheng.openchat.db.model.ChatMessage;
+import com.asdzheng.openchat.ui.view.MarkedView;
 import com.bluewhaleyt.component.dialog.DialogUtil;
 import com.unfbx.chatgpt.entity.chat.Message.Role;
 
@@ -38,10 +39,15 @@ public class MessageAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     @Override
+    public long getItemId(int position) {
+        return mChatMessages.get(position).getId();
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ChatMessage chatMessage = mChatMessages.get(position);
         if(holder instanceof ChatMessageViewHolder) {
-            ((ChatMessageViewHolder)holder).chatMessageView.setText(chatMessage.getContent());
+            ((ChatMessageViewHolder)holder).chatMessageView.setMDText(chatMessage.getContent());
         } else if (holder instanceof UserMessageViewHolder){
             ((UserMessageViewHolder)holder).userMessageView.setText(chatMessage.getContent());
         }
@@ -89,7 +95,7 @@ public class MessageAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
-        TextView chatMessageView;
+        MarkedView chatMessageView;
         public ChatMessageViewHolder(@NonNull View itemView) {
             super(itemView);
             chatMessageView = itemView.findViewById(R.id.tv_chat_reply_markdown_message);

@@ -132,6 +132,7 @@ class MainActivity : BaseActivity() {
         binding.rvChatList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL).apply {
             getDrawable(R.drawable.divider)?.let { setDrawable(it) }
         })
+        binding.rvChatList.setItemViewCacheSize(10)
 //        binding.rvChatList.linear()
 //            .divider {
 //                setDrawable(R.drawable.divider)
