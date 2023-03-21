@@ -7,9 +7,7 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.View.OnScrollChangeListener
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,7 +31,6 @@ import com.unfbx.chatgpt.entity.chat.ChatCompletionResponse
 import com.unfbx.chatgpt.entity.chat.Message.Role
 import com.unfbx.chatgpt.sse.ConsoleEventSourceListener
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.newSingleThreadContext
 import lombok.SneakyThrows
 import okhttp3.Response
@@ -49,10 +46,9 @@ class MainActivity : BaseActivity() {
 
     private val threadPool = newSingleThreadContext("message")
 
-    private lateinit var adapter: MessageAdapter
     private var mChatMessages: MutableList<ChatMessage>? = null
     private lateinit var chat: Chat
-
+    private lateinit var adapter: MessageAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -67,11 +63,10 @@ class MainActivity : BaseActivity() {
     }
 
     private fun setupChatGPT() {
-        if (PreferencesManager.getOpenAIAPIKey().equals("")) {
+        if (PreferencesManager.getOpenAIAPIKey().trim().isEmpty()) {
             SnackbarUtil.makeSnackbar(this, getString(R.string.api_key_missing))
-            binding.layoutMessageInputContainer.visibility = View.GONE
-            binding.rvChatList.visibility = View.GONE
-            IntentUtil.intent(this, SettingsActivity::class.java)
+            val dialog = SetupKeyDialog();
+            dialog.show(supportFragmentManager, "SetupKeyDialogFragment");
         } else {
             binding.layoutMessageInputContainer.visibility = View.VISIBLE
             binding.rvChatList.visibility = View.VISIBLE
@@ -87,7 +82,7 @@ class MainActivity : BaseActivity() {
         }
         binding.etMessage.setOnFocusChangeListener { v, hasFocus ->
             if(hasFocus ) {
-                binding.etMessage.postDelayed({scrollToEnd()},200)
+                binding.etMessage.postDelayed({scrollToEnd(false)},200)
             }
         }
 
@@ -132,12 +127,36 @@ class MainActivity : BaseActivity() {
         adapter = MessageAdapter(mChatMessages)
         val layoutManager = LinearLayoutManager(this);
         layoutManager.stackFromEnd = true;
+        binding.rvChatList.adapter = adapter
         binding.rvChatList.layoutManager = layoutManager;
         binding.rvChatList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL).apply {
             getDrawable(R.drawable.divider)?.let { setDrawable(it) }
         })
-        binding.rvChatList.adapter = adapter;
-        adapter.setMessageList(mChatMessages);
+//        binding.rvChatList.linear()
+//            .divider {
+//                setDrawable(R.drawable.divider)
+//            }
+//            .setup {
+//                addType<ChatMessage> {
+//                    when(role) {
+//                        Role.USER.name -> R.layout.layout_message_user_input
+//                        else -> R.layout.layout_message_chatgpt_item
+//                    }
+//                }
+//                onBind {
+//                    Log.i("main", "id = " + getModel<ChatMessage>().id + " | role " + getModel<ChatMessage>().role)
+//
+//                    when(getModel<ChatMessage>().role) {
+//                        Role.USER.name -> {
+//                            findView<TextView>(R.id.tv_user_input_message).text = getModel<ChatMessage>().content
+//                        }
+//                        else -> {
+//                            findView<MarkedView>(R.id.tv_chat_reply_markdown_message).setMDText(getModel<ChatMessage>().content)
+//                        }
+//                    }
+//
+//                }
+//        }
         binding.rvChatList.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -290,8 +309,8 @@ class MainActivity : BaseActivity() {
         mChatMessages?.apply {
             if (!contains(chatMessage)) {
                 add(chatMessage)
-                adapter.notifyItemInserted(size - 1)
-                binding.rvChatList.smoothScrollToPosition(size - 1)
+                binding.rvChatList.adapter?.notifyItemInserted(size - 1)
+                binding.rvChatList.scrollToPosition(size - 1)
             } else {
                 notifyLastMessage()
             }
@@ -302,7 +321,7 @@ class MainActivity : BaseActivity() {
         runOnUiThread {
             mChatMessages?.apply {
                 if (isNotEmpty()) {
-                    adapter.notifyItemChanged(size - 1)
+                    binding.rvChatList.adapter?.notifyItemChanged(size - 1)
                 }
             }
         }

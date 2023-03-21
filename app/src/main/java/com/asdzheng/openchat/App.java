@@ -16,7 +16,7 @@ public class App extends Application {
         super.onCreate();
         context = getApplicationContext();
         DynamicColorsUtil.setDynamicColorsIfAvailable(this);
-        if(!PreferencesManager.getOpenAIAPIKey().isEmpty()) {
+        if(!PreferencesManager.getOpenAIAPIKey().trim().isEmpty()) {
             OpenClient.INSTANCE.build(PreferencesManager.getOpenAIAPIKey());
         }
     }

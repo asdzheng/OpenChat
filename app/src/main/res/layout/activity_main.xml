@@ -20,7 +20,7 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <com.l4digital.fastscroll.FastScrollRecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chat_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

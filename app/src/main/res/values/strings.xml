@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">ChatGPT</string>
+    <string name="app_name" translatable="false">OpenChat</string>
     <string name="default_openai_model" translatable="false">gpt-3.5-turbo</string>
 
     
@@ -38,4 +38,11 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="casual_chat">Casual Chat</string>
+    <string name="key_init_description">Welcome use OpenChat, you need to have a API Key to first</string>
+    <string name="step_one">1. Open \u0020</string>
+    <string name="api_keys">API Keys </string>
+    <string name="step_two">2. Click \'create new secret key\' to generate an API key if you don\'t already have one</string>
+    <string name="step_three">3.Then input your API Key</string>
+
+
 </resources>

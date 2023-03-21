@@ -17,6 +17,11 @@ public class PreferencesManager {
         return getPrefs().getString("pref_openai_api_key", "");
     }
 
+    public static void setOpenAIAPIKey(String key) {
+         getPrefs().edit().putString("pref_openai_api_key", key.trim()).apply();
+    }
+
+
     public static String getOpenAIModel() {
         return getPrefs().getString("pref_openai_model", App.getContext().getString(R.string.default_openai_model));
     }

@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.asdzheng.openchat.R;
 import com.asdzheng.openchat.db.RoomHelper;
 import com.asdzheng.openchat.db.model.ChatMessage;
-import com.asdzheng.openchat.ui.view.MarkedView;
 import com.bluewhaleyt.component.dialog.DialogUtil;
 import com.unfbx.chatgpt.entity.chat.Message.Role;
 
@@ -30,7 +29,7 @@ public class MessageAdapter extends RecyclerView.Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
-        if(viewType == R.layout.layout_message_list_item) {
+        if(viewType == R.layout.layout_message_chatgpt_item) {
             return new ChatMessageViewHolder(view);
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
@@ -42,7 +41,7 @@ public class MessageAdapter extends RecyclerView.Adapter<ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ChatMessage chatMessage = mChatMessages.get(position);
         if(holder instanceof ChatMessageViewHolder) {
-            ((ChatMessageViewHolder)holder).chatMessageView.setMDText(chatMessage.getContent());
+            ((ChatMessageViewHolder)holder).chatMessageView.setText(chatMessage.getContent());
         } else if (holder instanceof UserMessageViewHolder){
             ((UserMessageViewHolder)holder).userMessageView.setText(chatMessage.getContent());
         }
@@ -58,7 +57,7 @@ public class MessageAdapter extends RecyclerView.Adapter<ViewHolder> {
     public int getItemViewType(int position) {
         ChatMessage chatMessage = mChatMessages.get(position);
         if(Role.ASSISTANT.name().equals(chatMessage.getRole())) {
-            return R.layout.layout_message_list_item;
+            return R.layout.layout_message_chatgpt_item;
         } else {
             return R.layout.layout_message_user_input;
         }
@@ -90,7 +89,7 @@ public class MessageAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
-        MarkedView chatMessageView;
+        TextView chatMessageView;
         public ChatMessageViewHolder(@NonNull View itemView) {
             super(itemView);
             chatMessageView = itemView.findViewById(R.id.tv_chat_reply_markdown_message);
