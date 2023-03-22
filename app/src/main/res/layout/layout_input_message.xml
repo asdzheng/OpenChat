@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_message_input_container"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <EditText
+        android:id="@+id/et_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:autofillHints="feel free to talk with chatgpt"
+        android:background="@null"
+        android:focusableInTouchMode="true"
+        android:hint="@string/enter_message"
+        android:imeOptions="flagNoExtractUi"
+        android:maxHeight="250dp"
+        android:paddingStart="16dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="10dp"
+        android:textColor="?colorOnSurfaceVariant" />
+
+    <Button
+        android:id="@+id/btn_send"
+        app:icon="@drawable/ic_baseline_send_24"
+        app:iconGravity="textEnd"
+        app:iconPadding="2dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress_circular"
+        app:indicatorColor="@android:color/darker_gray"
+        app:indicatorSize="30dp"
+        app:trackThickness="3dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+</LinearLayout>

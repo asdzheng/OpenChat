@@ -38,6 +38,20 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="casual_chat">Casual Chat</string>
+
+    <string name="positive_energy">Positive Energy</string>
+    <string name="positive_energy_prompt">Praise me</string>
+
+    <string name="code_assistant">Code Assistant</string>
+    <string name="code_assistant_prompt">Conducts code reviews, debugging, refactoring, algorithm,
+        implementation, and provides explanations for code</string>
+
+    <string name="translate_assistant">Translate Assistant</string>
+    <string name="translate_assistant_prompt">Translate every sentence</string>
+
+    <string name="editor_assistant">Editor Assistant</string>
+    <string name="editor_assistant_prompt">Edit every sentence</string>
+
     <string name="key_init_description">Welcome use OpenChat, you need to have a API Key to first</string>
     <string name="step_one">1. Open \u0020</string>
     <string name="api_keys">API Keys </string>

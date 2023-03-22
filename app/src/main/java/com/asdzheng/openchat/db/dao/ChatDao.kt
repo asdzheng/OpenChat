@@ -26,7 +26,7 @@ abstract class ChatDao {
     abstract fun queryByTitle(title: String): List<Chat>
 
     @Query("select * from Chat")
-    abstract fun queryAll(): List<Chat>
+    abstract fun queryAll(): MutableList<Chat>
 
     @Query("select count(*) from Chat")
     abstract fun chatCount(): Int

@@ -7,13 +7,10 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
 import com.asdzheng.openchat.R
-import com.asdzheng.openchat.databinding.ActivityMainBinding
+import com.asdzheng.openchat.databinding.ActivityChatBinding
 import com.asdzheng.openchat.db.RoomHelper
 import com.asdzheng.openchat.db.model.Chat
 import com.asdzheng.openchat.db.model.ChatMessage
@@ -25,7 +22,11 @@ import com.asdzheng.openchat.util.PreferencesManager
 import com.bluewhaleyt.common.DynamicColorsUtil
 import com.bluewhaleyt.common.IntentUtil
 import com.bluewhaleyt.component.dialog.DialogUtil
-import com.bluewhaleyt.component.snackbar.SnackbarUtil
+import com.drake.engine.utils.dp
+import com.drake.softinput.hasSoftInput
+import com.drake.softinput.hideSoftInput
+import com.drake.softinput.setWindowSoftInput
+import com.drake.softinput.showSoftInput
 import com.unfbx.chatgpt.entity.chat.ChatCompletion
 import com.unfbx.chatgpt.entity.chat.ChatCompletionResponse
 import com.unfbx.chatgpt.entity.chat.Message.Role
@@ -39,10 +40,9 @@ import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.CountDownLatch
 
+class ChatActivity : BaseActivity() {
 
-class MainActivity : BaseActivity() {
-
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityChatBinding
 
     private val threadPool = newSingleThreadContext("message")
 
@@ -52,38 +52,22 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initialize()
     }
 
-    override fun onStart() {
-        super.onStart()
-        setupChatGPT()
-    }
-
-    private fun setupChatGPT() {
-        if (PreferencesManager.getOpenAIAPIKey().trim().isEmpty()) {
-            SnackbarUtil.makeSnackbar(this, getString(R.string.api_key_missing))
-            val dialog = SetupKeyDialog();
-            dialog.show(supportFragmentManager, "SetupKeyDialogFragment");
-        } else {
-            binding.layoutMessageInputContainer.visibility = View.VISIBLE
-            binding.rvChatList.visibility = View.VISIBLE
-        }
-    }
-
     private fun initialize() {
-        chat = DataHelper.generateDefaultChat(getString(R.string.casual_chat), getString(R.string.casual_chat))
+        // 键盘弹出平滑动画
+        setWindowSoftInput(float = binding.inputContainer.etMessage, setPadding = true, margin = 10.dp, onChanged = {
+            if(hasSoftInput()){
+                scrollToEnd(true)
+            }
+        })
         loadHistoryData()
         setupChatList()
-        binding.btnSend.setOnClickListener {
+        binding.inputContainer.btnSend.setOnClickListener {
             sendMessage()
-        }
-        binding.etMessage.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus ) {
-                binding.etMessage.postDelayed({scrollToEnd(false)},200)
-            }
         }
 
         val gd = GradientDrawable()
@@ -91,7 +75,7 @@ class MainActivity : BaseActivity() {
         gd.setColor(dynamic.colorPrimaryContainer)
         gd.alpha = 100
         gd.cornerRadius = 100f
-        binding.etMessage.background = gd
+        binding.inputContainer.etMessage.background = gd
     }
 
     private fun scrollToEnd(isSmooth: Boolean = true) {
@@ -109,15 +93,7 @@ class MainActivity : BaseActivity() {
             mChatMessages = RoomHelper.getInstance().chatMessageDao().queryAll()
             runOnUiThread {
                 adapter.setMessageList(mChatMessages)
-                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                scrollToEnd(false)
-                binding.etMessage.requestFocus()
-                binding.etMessage.postDelayed(
-                    {
-                        imm.showSoftInput(binding.etMessage, 0)
-                    }
-                    , 500
-                )
+                binding.inputContainer.etMessage.showSoftInput()
             }
         }
     }
@@ -133,6 +109,7 @@ class MainActivity : BaseActivity() {
             getDrawable(R.drawable.divider)?.let { setDrawable(it) }
         })
         binding.rvChatList.setItemViewCacheSize(10)
+
 //        binding.rvChatList.linear()
 //            .divider {
 //                setDrawable(R.drawable.divider)
@@ -158,20 +135,25 @@ class MainActivity : BaseActivity() {
 //
 //                }
 //        }
-        binding.rvChatList.addOnScrollListener(object : RecyclerView.OnScrollListener(){
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if(SCROLL_STATE_DRAGGING == newState) {
-                    val inputMethodManager =
-                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                   inputMethodManager.hideSoftInputFromWindow(
-                        binding.etMessage.windowToken,
-                        0
-                    )
-                    binding.etMessage.clearFocus()
-                }
-            }
-        })
+//        binding.rvChatList.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                super.onScrollStateChanged(recyclerView, newState)
+//                if(SCROLL_STATE_DRAGGING == newState) {
+//                    val inputMethodManager =
+//                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+//                   inputMethodManager.hideSoftInputFromWindow(
+//                        binding.inputContainer.etMessage.windowToken,
+//                        0
+//                    )
+//                    binding.inputContainer.etMessage.clearFocus()
+//                }
+//            }
+//        })
+        binding.rvChatList.setOnTouchListener { v, _ ->
+            v.clearFocus() // 清除文字选中状态
+            hideSoftInput() // 隐藏键盘
+            false
+        }
     }
 
 
@@ -208,7 +190,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun sendMessage() {
-        val userInput = binding.etMessage.text.toString()
+        val userInput = binding.inputContainer.etMessage.text.toString()
         if (!TextUtils.isEmpty(userInput)) {
             showLoading()
             threadPool.executor.execute {
@@ -216,7 +198,7 @@ class MainActivity : BaseActivity() {
                 RoomHelper.getInstance().chatMessageDao().insert(userInputMessage)
                 runOnUiThread {
                     addMessage(userInputMessage)
-                    binding.etMessage.setText("")
+                    binding.inputContainer.etMessage.setText("")
                 }
                 val countDownLatch = CountDownLatch(1)
                 val eventSourceListener = object : ConsoleEventSourceListener() {
@@ -297,13 +279,13 @@ class MainActivity : BaseActivity() {
     }
 
     private fun showLoading() {
-        binding.progressCircular.visibility = View.VISIBLE
-        binding.btnSend.visibility = View.GONE
+        binding.inputContainer.progressCircular.visibility = View.VISIBLE
+        binding.inputContainer.btnSend.visibility = View.GONE
     }
 
     private fun hideLoading() {
-        binding.progressCircular.visibility = View.GONE
-        binding.btnSend.visibility = View.VISIBLE
+        binding.inputContainer.progressCircular.visibility = View.GONE
+        binding.inputContainer.btnSend.visibility = View.VISIBLE
     }
 
     private fun addMessage(chatMessage: ChatMessage) {
