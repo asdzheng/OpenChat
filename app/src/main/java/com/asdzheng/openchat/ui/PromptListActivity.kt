@@ -48,6 +48,11 @@ class PromptListActivity : BaseActivity() {
         loadChatsData()
         setupChatList()
         binding.inputContainer.btnSend.setOnClickListener {
+            val message = binding.inputContainer.etMessage.text
+            if(message.isNullOrEmpty().not()) {
+                jumpToChatActivity(DataHelper.generateDefaultChat(this), message.toString())
+                binding.inputContainer.etMessage.setText("")
+            }
         }
         binding.inputContainer.layoutMessageInputContainer.setBackgroundResource(R.drawable.bg_input_container)
     }
@@ -86,11 +91,7 @@ class PromptListActivity : BaseActivity() {
                 }
 
                 onClick(R.id.container_chat) {
-                    val chat = getModel<Chat>()
-                    val intent = Intent(this@PromptListActivity, ChatActivity::class.java).apply {
-                        putExtra("data", chat)
-                    }
-                    startActivity(intent)
+                    jumpToChatActivity(getModel(), null)
                 }
             }.models = getChatGroupData()
         binding.rvPrompts.setOnTouchListener { v, _ ->
@@ -100,8 +101,16 @@ class PromptListActivity : BaseActivity() {
         }
     }
 
+    private fun jumpToChatActivity(chat: Chat, message: String?) {
+        val intent = Intent(this@PromptListActivity, ChatActivity::class.java).apply {
+            putExtra("data", chat)
+            putExtra("message", message)
+        }
+        startActivity(intent)
+    }
+
     private fun getChatGroupData(): List<ChatGroup?> {
-        val groupDefault = ChatGroup(true, 0, DataHelper.generateDefaultChat(this))
+        val groupDefault = ChatGroup(true, 0, listOf(DataHelper.generateDefaultChat(this)))
         val groupSuggestions = ChatGroup(true, 1, DataHelper.generateSuggestionsChat(this))
         return listOf(groupDefault, groupSuggestions)
     }

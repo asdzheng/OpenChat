@@ -57,6 +57,9 @@
     <string name="api_keys">API Keys </string>
     <string name="step_two">2. Click \'create new secret key\' to generate an API key if you don\'t already have one</string>
     <string name="step_three">3.Then input your API Key</string>
+    <string name="ok">OK</string>
+    <string name="chat_connect_error_no_response">OpenAI sse connect error : %s</string>
+    <string name="chat_connect_error_has_response">OpenAI sse connect error : %1$s, %2$s</string>
 
 
 </resources>

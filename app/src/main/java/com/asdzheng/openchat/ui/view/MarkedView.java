@@ -95,7 +95,7 @@ public final class MarkedView extends WebView {
         getSettings().setJavaScriptEnabled(true);
         getSettings().setAllowUniversalAccessFromFileURLs(true);
         getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        getSettings().setDefaultFontSize(16);
+        getSettings().setDefaultFontSize(14);
         getSettings().setLoadWithOverviewMode(true);
         setBackgroundColor(Color.TRANSPARENT);
 

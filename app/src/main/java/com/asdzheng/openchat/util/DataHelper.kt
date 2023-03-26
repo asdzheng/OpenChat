@@ -30,12 +30,12 @@ object DataHelper {
         return contextMessages
     }
 
-    fun generateDefaultChat(context: Context): List<Chat> {
-        return listOf(Chat().apply {
+    fun generateDefaultChat(context: Context): Chat{
+        return Chat().apply {
             this.title = context.getString(R.string.casual_chat)
             this.prompt = context.getString(R.string.casual_chat)
             this.type = ChatType.DEFAULT.name
-        })
+        }
     }
 
     fun generateSuggestionsChat(context: Context): MutableList<Chat> {

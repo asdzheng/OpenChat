@@ -1,6 +1,5 @@
 package com.asdzheng.openchat.db.model
 
-import android.icu.util.Calendar
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.asdzheng.openchat.util.PreferencesManager
@@ -13,6 +12,7 @@ class ChatMessage {
     var model: String
     //chat group title
     var title: String? = null
+    var chatId: Int? = 0
     var role: String
     var time = 0.0
 
