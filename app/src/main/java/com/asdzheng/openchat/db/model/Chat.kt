@@ -10,7 +10,7 @@ import com.asdzheng.openchat.R
  * @date on 2023/3/19
  */
 @Entity
-class Chat {
+class Chat : java.io.Serializable {
     @PrimaryKey(autoGenerate = true)
     var id = 0
     var title: String? = null

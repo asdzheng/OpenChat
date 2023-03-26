@@ -12,7 +12,6 @@
         <activity
             android:name=".ui.PromptListActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
             android:theme="@style/Theme.OpenChat"
             android:screenOrientation="fullSensor"
             >

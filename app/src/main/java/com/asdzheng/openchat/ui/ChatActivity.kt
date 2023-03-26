@@ -47,7 +47,7 @@ class ChatActivity : BaseActivity() {
     private val threadPool = newSingleThreadContext("message")
 
     private var mChatMessages: MutableList<ChatMessage>? = null
-    private lateinit var chat: Chat
+    private var chat: Chat? = null
     private lateinit var adapter: MessageAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +64,7 @@ class ChatActivity : BaseActivity() {
                 scrollToEnd(true)
             }
         })
+        chat = intent.getSerializableExtra("data") as Chat?
         loadHistoryData()
         setupChatList()
         binding.inputContainer.btnSend.setOnClickListener {
@@ -90,7 +91,11 @@ class ChatActivity : BaseActivity() {
 
     private fun loadHistoryData() {
         threadPool.executor.execute {
-            mChatMessages = RoomHelper.getInstance().chatMessageDao().queryAll()
+            mChatMessages = chat?.title?.let {
+                RoomHelper.getInstance().chatMessageDao().queryByTitle(
+                    it
+                )
+            }
             runOnUiThread {
                 adapter.setMessageList(mChatMessages)
                 binding.inputContainer.etMessage.showSoftInput()
@@ -110,45 +115,6 @@ class ChatActivity : BaseActivity() {
         })
         binding.rvChatList.setItemViewCacheSize(10)
 
-//        binding.rvChatList.linear()
-//            .divider {
-//                setDrawable(R.drawable.divider)
-//            }
-//            .setup {
-//                addType<ChatMessage> {
-//                    when(role) {
-//                        Role.USER.name -> R.layout.layout_message_user_input
-//                        else -> R.layout.layout_message_chatgpt_item
-//                    }
-//                }
-//                onBind {
-//                    Log.i("main", "id = " + getModel<ChatMessage>().id + " | role " + getModel<ChatMessage>().role)
-//
-//                    when(getModel<ChatMessage>().role) {
-//                        Role.USER.name -> {
-//                            findView<TextView>(R.id.tv_user_input_message).text = getModel<ChatMessage>().content
-//                        }
-//                        else -> {
-//                            findView<MarkedView>(R.id.tv_chat_reply_markdown_message).setMDText(getModel<ChatMessage>().content)
-//                        }
-//                    }
-//
-//                }
-//        }
-//        binding.rvChatList.addOnScrollListener(object : RecyclerView.OnScrollListener(){
-//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                super.onScrollStateChanged(recyclerView, newState)
-//                if(SCROLL_STATE_DRAGGING == newState) {
-//                    val inputMethodManager =
-//                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-//                   inputMethodManager.hideSoftInputFromWindow(
-//                        binding.inputContainer.etMessage.windowToken,
-//                        0
-//                    )
-//                    binding.inputContainer.etMessage.clearFocus()
-//                }
-//            }
-//        })
         binding.rvChatList.setOnTouchListener { v, _ ->
             v.clearFocus() // 清除文字选中状态
             hideSoftInput() // 隐藏键盘
@@ -174,7 +140,7 @@ class ChatActivity : BaseActivity() {
                         threadPool.cancel()
                         mChatMessages = mutableListOf()
                         adapter.setMessageList(mChatMessages)
-                        RoomHelper.getInstance().chatMessageDao().deleteAll(chat.title!!)
+                        RoomHelper.getInstance().chatMessageDao().deleteAll(chat?.title!!)
                     }
                     setNegativeButton(android.R.string.cancel
                     ) { _: DialogInterface?, _: Int ->
@@ -254,7 +220,7 @@ class ChatActivity : BaseActivity() {
 
                 val chatCompletion =
                     ChatCompletion.builder()
-                        .messages(DataHelper.getMessageContext(chat.prompt!!, chat.title!!))
+                        .messages(DataHelper.getMessageContext(chat!!.prompt!!, chat!!.title!!))
                         .model(PreferencesManager.getOpenAIModel())
                         .stream(false)
                         .temperature(PreferencesManager.getOpenAITemperature().toDouble())

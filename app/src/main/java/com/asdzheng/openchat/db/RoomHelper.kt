@@ -14,7 +14,7 @@ import com.asdzheng.openchat.db.model.ChatMessage
  * @author zhengjb
  * @date on 2023/3/19
  */
-@Database(entities = [Chat::class, ChatMessage::class], version = 1)
+@Database(entities = [Chat::class, ChatMessage::class], version = 2)
 abstract class RoomHelper : RoomDatabase(){
     //创建DAO的抽象类
     abstract fun chatDao(): ChatDao

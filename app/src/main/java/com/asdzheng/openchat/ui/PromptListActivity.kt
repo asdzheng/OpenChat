@@ -1,6 +1,8 @@
 package com.asdzheng.openchat.ui
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.asdzheng.openchat.R
@@ -11,7 +13,6 @@ import com.asdzheng.openchat.db.model.ChatGroup
 import com.asdzheng.openchat.util.DataHelper
 import com.asdzheng.openchat.util.PreferencesManager
 import com.bluewhaleyt.component.snackbar.SnackbarUtil
-import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.drake.softinput.hideSoftInput
 import kotlinx.coroutines.newSingleThreadContext
@@ -58,25 +59,38 @@ class PromptListActivity : BaseActivity() {
     }
 
     private fun setupChatList() {
-        binding.rvPrompts.linear()
-//            .divider {
-//                setDrawable(R.drawable.divider)
-//            }
+        binding.rvPrompts
             .setup {
                 addType<ChatGroup>(R.layout.item_group_space)
                 addType<Chat>(R.layout.item_chat)
                 onBind {
 //                    Log.i("main", "id = " + getModel<ChatMessage>().id + " | role " + getModel<ChatMessage>().role)
-
                     when (itemViewType) {
                         R.layout.item_chat -> {
+                            val parentPosition = findParentPosition()
+                            val groupSize = findParentViewHolder()?.getModelOrNull<ChatGroup>()?.itemSublist?.size
                             val chat = getModel<Chat>()
                             findView<TextView>(R.id.tv_title).text = chat.title
                             findView<TextView>(R.id.tv_prompt).text = chat.prompt
                             findView<ImageView>(R.id.iv_chat).setImageResource(chat.icon)
-                        }
+                            val container = findView<View>(R.id.container_chat)
+                            if (groupSize == 1) {
+                                container.setBackgroundResource(R.drawable.chat_bg_corner)
+                            } else if (modelPosition == findParentPosition() + 1) {
+                                container.setBackgroundResource(R.drawable.chat_bg_top_corner)
+                            } else if (modelPosition == (parentPosition + (groupSize ?: 0))) {
+                                container.setBackgroundResource(R.drawable.chat_bg_bottom_corner)
+                            }
+                          }
                     }
+                }
 
+                onClick(R.id.container_chat) {
+                    val chat = getModel<Chat>()
+                    val intent = Intent(this@PromptListActivity, ChatActivity::class.java).apply {
+                        putExtra("data", chat)
+                    }
+                    startActivity(intent)
                 }
             }.models = getChatGroupData()
         binding.rvPrompts.setOnTouchListener { v, _ ->
