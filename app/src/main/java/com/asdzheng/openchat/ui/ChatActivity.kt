@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.asdzheng.openchat.R
 import com.asdzheng.openchat.databinding.ActivityChatBinding
 import com.asdzheng.openchat.db.RoomHelper
@@ -152,6 +153,7 @@ class ChatActivity : BaseActivity() {
                 getDrawable(R.drawable.divider)?.let { setDrawable(it) }
             })
         binding.rvChatList.setItemViewCacheSize(10)
+        (binding.rvChatList.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         binding.rvChatList.setOnTouchListener { v, _ ->
             binding.inputContainer.etMessage.clearFocus()
@@ -314,7 +316,8 @@ class ChatActivity : BaseActivity() {
                 add(chatMessage)
                 binding.rvChatList.adapter?.notifyItemInserted(size - 1)
                 binding.rvChatList.scrollToPosition(size - 1)
-            } else {
+            }
+            else {
                 notifyLastMessage()
             }
         }
