@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.OpenChat" parent="Theme.Material3.Light">
+    <style name="Theme.OpenChat" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorOnErrorContainer">@color/md_theme_light_onErrorContainer</item>
         <item name="colorOnError">@color/md_theme_light_onError</item>
         <item name="colorErrorContainer">@color/md_theme_light_errorContainer</item>
@@ -31,7 +31,6 @@
         <item name="materialAlertDialogTheme">@style/Theme.AlertDialog</item>
         <item name="alertDialogTheme">@style/Theme.AlertDialog</item>
         <item name="dialogCornerRadius">28dp</item>
-
         <item name="android:windowLightStatusBar">true</item>
     </style>
 

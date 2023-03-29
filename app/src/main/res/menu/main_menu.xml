@@ -2,15 +2,18 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-<!--    <item-->
-<!--        android:id="@+id/menu_context"-->
-<!--        android:title="@string/context" />-->
 
     <item
-        android:id="@+id/menu_clear_messages"
-        android:title="@string/clear" />
+        android:id="@+id/menu_add_conversation"
+        android:title="@string/add"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/icon_add_24"
+        />
 
     <item
         android:id="@+id/menu_settings"
-        android:title="@string/settings" />
+        android:title="@string/settings"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/icon_settings_24"
+        />
 </menu>

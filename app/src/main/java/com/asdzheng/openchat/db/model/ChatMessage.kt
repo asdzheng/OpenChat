@@ -12,16 +12,17 @@ class ChatMessage {
     var model: String
     //chat group title
     var title: String? = null
-    var chatId: Int? = 0
+    var chatId: String? = null
     var role: String
     var time = 0.0
 
 
-    constructor(content: String, role: String, time: Double, title: String?) {
+    constructor(content: String, role: String, time: Double, title: String?, chatId: String) {
         this.content = content
         this.role = role
         this.time = time
         this.title = title
         this.model = PreferencesManager.getOpenAIModel()
+        this.chatId = chatId
     }
 }

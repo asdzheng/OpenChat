@@ -4,6 +4,8 @@ import androidx.annotation.DrawableRes
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.asdzheng.openchat.R
+import com.asdzheng.openchat.util.PreferencesManager
+import java.util.*
 
 /**
  * @author zhengjb
@@ -18,5 +20,6 @@ class Chat : java.io.Serializable {
     @DrawableRes
     var icon = R.drawable.baseline_question_answer_black_24
     var type: String? = null
-
+    var model: String? = PreferencesManager.getOpenAIModel()
+    var uuid : String = UUID.randomUUID().toString()
 }

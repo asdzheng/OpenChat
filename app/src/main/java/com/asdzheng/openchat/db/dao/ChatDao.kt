@@ -22,8 +22,8 @@ abstract class ChatDao {
     @Update
     abstract fun update(chat: Chat)
 
-    @Query("select * from Chat where title =:title")
-    abstract fun queryByTitle(title: String): List<Chat>
+    @Query("select * from Chat where type =:type order by id DESC")
+    abstract fun queryByType(type: String): MutableList<Chat>
 
     @Query("select * from Chat")
     abstract fun queryAll(): MutableList<Chat>

@@ -16,7 +16,6 @@ public class SettingsActivity extends BaseActivity {
     }
 
     private void initialize() {
-        getSupportActionBar().setTitle("");
 
         getSupportFragmentManager()
                 .beginTransaction()

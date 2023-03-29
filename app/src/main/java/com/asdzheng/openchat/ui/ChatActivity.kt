@@ -55,27 +55,12 @@ class ChatActivity : BaseActivity() {
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initialize()
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
     }
 
     private fun initialize() {
-        // 键盘弹出平滑动画
-//        setWindowSoftInput(
-//            float = binding.inputContainer.etMessage,
-//            setPadding = true,
-////            margin = 10.dp,
-//            onChanged = {
-//                mChatMessages?.apply {
-//                    val layoutManager = binding.rvChatList.layoutManager as LinearLayoutManager
-//                    Log.i(
-//                        "chat", "size = " + size + " | LastVisibleItemPosition" +
-//                                layoutManager.findLastVisibleItemPosition()
-//                    )
-//                    if (hasSoftInput() && layoutManager.findLastVisibleItemPosition() != (size - 1)) {
-//                        scrollToEnd(true)
-//                    }
-//                }
-//
-//            })
         binding.inputContainer.etMessage.setOnFocusChangeListener { v, hasFocus ->
             if(hasFocus) {
                 mChatMessages?.apply {
@@ -91,6 +76,8 @@ class ChatActivity : BaseActivity() {
             }
         }
         chat = intent.getSerializableExtra("data") as Chat?
+        binding.toolbar.title = chat?.title
+        binding.toolbar.subtitle = chat?.prompt
         loadHistoryData()
         setupChatList()
         binding.inputContainer.btnSend.setOnClickListener {
@@ -122,9 +109,10 @@ class ChatActivity : BaseActivity() {
 
     private fun loadHistoryData() {
         threadPool.executor.execute {
-            mChatMessages = chat?.title?.let {
-                RoomHelper.getInstance().chatMessageDao().queryByTitle(
-                    it
+            mChatMessages = chat?.let {
+                Log.i("chat", "chat id = " + it.id)
+                RoomHelper.getInstance().chatMessageDao().queryByChatId(
+                    it.uuid
                 )
             }
             runOnUiThread {
@@ -165,7 +153,7 @@ class ChatActivity : BaseActivity() {
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
+        menuInflater.inflate(R.menu.chat_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -257,13 +245,13 @@ class ChatActivity : BaseActivity() {
                     if (Objects.isNull(response)) {
                         showSnackBarMsg(getString(R.string.chat_connect_error_no_response, t))
                         eventSource.cancel()
-                        return
-                    }
-                    val body = response!!.body()
-                    if (Objects.nonNull(body)) {
-                        showSnackBarMsg(getString(R.string.chat_connect_error_has_response,body!!.string(), t))
                     } else {
-                        showSnackBarMsg(getString(R.string.chat_connect_error_has_response,response, t))
+                        val body = response!!.body()
+                        if (Objects.nonNull(body)) {
+                            showSnackBarMsg(getString(R.string.chat_connect_error_has_response,body!!.string(), t))
+                        } else {
+                            showSnackBarMsg(getString(R.string.chat_connect_error_has_response,response, t))
+                        }
                     }
                     messageEnd(countDownLatch)
                 }
@@ -271,7 +259,7 @@ class ChatActivity : BaseActivity() {
 
             val chatCompletion =
                 ChatCompletion.builder()
-                    .messages(DataHelper.getMessageContext(chat!!.prompt!!, chat!!.title!!))
+                    .messages(DataHelper.getMessageContext(chat!!.prompt!!, chat!!.uuid))
                     .model(PreferencesManager.getOpenAIModel())
                     .stream(false)
                     .temperature(PreferencesManager.getOpenAITemperature().toDouble())
@@ -289,7 +277,7 @@ class ChatActivity : BaseActivity() {
 
     private fun showSnackBarMsg(msg:String) {
         runOnUiThread{
-            SnackbarUtil.makeSnackbar(this, msg)
+            SnackbarUtil.makeErrorSnackbar(this, msg)
         }
     }
 
@@ -336,12 +324,12 @@ class ChatActivity : BaseActivity() {
 
     private fun makeChatMessage(
         message: String,
-        role: String
+        role: String,
     ): ChatMessage {
         return ChatMessage(
             message, role,
             Calendar.getInstance().timeInMillis.toDouble(),
-            chat?.title
+            chat?.title, chat!!.uuid
         )
     }
 

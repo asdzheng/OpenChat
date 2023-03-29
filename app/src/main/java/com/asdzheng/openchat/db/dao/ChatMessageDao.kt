@@ -23,11 +23,11 @@ abstract class ChatMessageDao {
     @Update
     abstract fun update(message: ChatMessage)
 
-    @Query("select * from ChatMessage where title =:title")
-    abstract fun queryByTitle(title: String): MutableList<ChatMessage>
+    @Query("select * from ChatMessage where chatId =:chatId")
+    abstract fun queryByChatId(chatId: String): MutableList<ChatMessage>
 
-    @Query("select * from ChatMessage where title =:title order by time DESC limit :count")
-    abstract fun queryByTitleContext(title: String, count: Int): MutableList<ChatMessage>
+    @Query("select * from ChatMessage where chatId =:chatId order by time DESC limit :count")
+    abstract fun queryByChatIdContext(chatId: String, count: Int): MutableList<ChatMessage>
 
     @Query("select * from ChatMessage")
     abstract fun queryAll(): MutableList<ChatMessage>
