@@ -20,6 +20,6 @@ class Chat : java.io.Serializable {
     @DrawableRes
     var icon = R.drawable.baseline_question_answer_black_24
     var type: String? = null
-    var model: String? = PreferencesManager.getOpenAIModel()
+    var model: String? = PreferencesManager.openAIModel
     var uuid : String = UUID.randomUUID().toString()
 }

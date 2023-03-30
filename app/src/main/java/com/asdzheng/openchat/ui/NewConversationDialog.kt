@@ -35,9 +35,11 @@ internal class NewConversationDialog : BottomSheetDialogFragment() {
         binding = DialogNewConversationBinding.inflate(inflater)
         val chat = arguments?.getSerializable("data")
         if(chat != null) {
+            binding.tvTitle.text = getString(R.string.edit_conversation)
             (chat as Chat).apply {
                 binding.etTitle.setText(title)
                 binding.etPrompt.setText(prompt)
+
             }
         }
 

@@ -48,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
+        android:enabled="false"
         android:text="@string/ok"
         style="@style/Widget.Material3.Button.TonalButton"
         />

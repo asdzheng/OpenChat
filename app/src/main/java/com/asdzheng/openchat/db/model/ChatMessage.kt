@@ -22,7 +22,7 @@ class ChatMessage {
         this.role = role
         this.time = time
         this.title = title
-        this.model = PreferencesManager.getOpenAIModel()
+        this.model = PreferencesManager.openAIModel!!
         this.chatId = chatId
     }
 }

@@ -12,9 +12,8 @@
         <EditTextPreference
             app:key="pref_openai_api_key"
             app:title="@string/api_key"
-            app:icon="@drawable/ic_baseline_key_24"/>
-
-
+            app:icon="@drawable/ic_baseline_key_24"
+            />
 
     </PreferenceCategory>
 
@@ -31,17 +30,15 @@
             app:entryValues="@array/model"
             app:defaultValue="@string/default_openai_model"/>
 
-        <EditTextPreference
+        <ListPreference
             app:key="pref_openai_temperature"
             app:title="@string/temperature"
             app:icon="@drawable/ic_outline_auto_awesome_24"
             app:useSimpleSummaryProvider="true"
-            app:defaultValue="0"/>
-
-<!--        <com.bluewhaleyt.component.preferences.material3.Material3SwitchPreference-->
-<!--            app:key="pref_openai_echo"-->
-<!--            app:title="@string/echo"-->
-<!--            app:icon="@drawable/ic_outline_textsms_24"/>-->
+            app:entryValues="@array/temperature"
+            app:entries="@array/temperature"
+            app:defaultValue="@string/temp_balance"
+            />
 
     </PreferenceCategory>
 

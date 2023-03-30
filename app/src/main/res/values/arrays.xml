@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="model">
+        <item>gpt-3.5-turbo</item>
         <item>@string/default_openai_model</item>
-        <item>gpt-3.5-turbo-0301</item>
+    </string-array>
+
+
+    <string-array name="temperature">
+        <item>@string/temp_creative</item>
+        <item>@string/temp_balance</item>
+        <item>@string/temp_precise</item>
     </string-array>
 </resources>

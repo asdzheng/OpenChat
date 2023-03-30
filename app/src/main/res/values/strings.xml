@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name" translatable="false">OpenChat</string>
+
     <string name="default_openai_model" translatable="false">gpt-3.5-turbo</string>
 
-    
     <string name="second">s</string>
     <string name="min">min</string>
     <string name="request_time">Request time</string>
@@ -70,5 +70,9 @@
     <string name="delete_chat_confirmation">Do you want to delete this conversation and clear all message?</string>
     <string name="edit">Edit</string>
 
+    <string name="temp_creative">Creative</string>
+    <string name="temp_balance">Balanced(default)</string>
+    <string name="temp_precise">Precise</string>
+    <string name="edit_conversation">Edit Conversation</string>
 
 </resources>

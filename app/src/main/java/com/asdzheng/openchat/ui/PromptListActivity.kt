@@ -14,10 +14,9 @@ import com.asdzheng.openchat.db.RoomHelper
 import com.asdzheng.openchat.db.model.Chat
 import com.asdzheng.openchat.db.model.ChatGroup
 import com.asdzheng.openchat.util.DataHelper
-import com.asdzheng.openchat.util.PreferencesManager
+import com.asdzheng.openchat.util.UIUtil
 import com.bluewhaleyt.common.IntentUtil
 import com.bluewhaleyt.component.dialog.DialogUtil
-import com.bluewhaleyt.component.snackbar.SnackbarUtil
 import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -36,27 +35,12 @@ class PromptListActivity : BaseActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         initialize()
-        setupChatGPT()
+        setupKeyDialog = UIUtil.checkSetupChatGPT(setupKeyDialog, this)
     }
 
     override fun onRestart() {
         super.onRestart()
         loadGroupData()
-    }
-
-    private fun setupChatGPT() {
-        if (PreferencesManager.getOpenAIAPIKey().trim().isEmpty()) {
-            SnackbarUtil.makeSnackbar(this, getString(R.string.api_key_missing))
-            if (setupKeyDialog == null) {
-                setupKeyDialog = SetupKeyDialog()
-                setupKeyDialog?.show(supportFragmentManager, "SetupKeyDialogFragment")
-            } else {
-                if (!setupKeyDialog?.isAdded!!) {
-                    setupKeyDialog?.show(supportFragmentManager, "SetupKeyDialogFragment")
-                }
-            }
-
-        }
     }
 
     private fun initialize() {

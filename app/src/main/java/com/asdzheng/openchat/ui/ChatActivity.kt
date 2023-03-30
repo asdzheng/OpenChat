@@ -21,6 +21,7 @@ import com.asdzheng.openchat.ui.adapter.MessageAdapter
 import com.asdzheng.openchat.util.DataHelper
 import com.asdzheng.openchat.util.JsonUtil
 import com.asdzheng.openchat.util.PreferencesManager
+import com.asdzheng.openchat.util.UIUtil
 import com.bluewhaleyt.common.DynamicColorsUtil
 import com.bluewhaleyt.component.dialog.DialogUtil
 import com.bluewhaleyt.component.snackbar.SnackbarUtil
@@ -48,6 +49,8 @@ class ChatActivity : BaseActivity() {
     private var mChatMessages: MutableList<ChatMessage>? = null
     private var chat: Chat? = null
     private lateinit var adapter: MessageAdapter
+    private var setupKeyDialog: SetupKeyDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -56,7 +59,11 @@ class ChatActivity : BaseActivity() {
         initialize()
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
 
+    override fun onStart() {
+        super.onStart()
+        setupKeyDialog = UIUtil.checkSetupChatGPT(setupKeyDialog, this)
     }
 
     private fun initialize() {
@@ -64,10 +71,10 @@ class ChatActivity : BaseActivity() {
             if(hasFocus) {
                 mChatMessages?.apply {
                     val layoutManager = binding.rvChatList.layoutManager as LinearLayoutManager
-                    Log.i(
-                        "chat", "size = " + size + " | LastVisibleItemPosition" +
-                                layoutManager.findLastVisibleItemPosition()
-                    )
+//                    Log.i(
+//                        "chat", "size = " + size + " | LastVisibleItemPosition" +
+//                                layoutManager.findLastVisibleItemPosition()
+//                    )
                     if (layoutManager.findLastVisibleItemPosition() != (size - 1)) {
                         scrollToEnd(true)
                     }
@@ -109,7 +116,7 @@ class ChatActivity : BaseActivity() {
     private fun loadHistoryData() {
         threadPool.executor.execute {
             mChatMessages = chat?.let {
-                Log.i("chat", "chat id = " + it.id)
+//                Log.i("chat", "chat id = " + it.id)
                 RoomHelper.getInstance().chatMessageDao().queryByChatId(
                     it.uuid
                 )
@@ -260,12 +267,14 @@ class ChatActivity : BaseActivity() {
                 }
             }
 
+            Log.i("chat", "tempValue ${PreferencesManager.getTemperatureValue().toDouble()}")
+
             val chatCompletion =
                 ChatCompletion.builder()
                     .messages(DataHelper.getMessageContext(chat!!.prompt!!, chat!!.uuid))
-                    .model(PreferencesManager.getOpenAIModel())
-                    .stream(false)
-                    .temperature(PreferencesManager.getOpenAITemperature().toDouble())
+                    .model(PreferencesManager.openAIModel!!)
+                    .stream(true)
+                    .temperature(PreferencesManager.getTemperatureValue().toDouble())
                     .build()
             OpenClient.streamApi?.streamChatCompletion(chatCompletion, eventSourceListener)
 
