@@ -34,7 +34,7 @@ object DataHelper {
     }
 
     fun generateDefaultChat(context: Context): Chat {
-        val chatList = RoomHelper.getInstance().chatDao().queryByType(ChatType.DEFAULT.name);
+        val chatList = RoomHelper.getInstance().chatDao().queryByType(listOf(ChatType.DEFAULT.name))
         return if (chatList.isEmpty()) {
             val defaultChat = Chat().apply {
                 this.title = context.getString(R.string.casual_chat)
@@ -49,7 +49,7 @@ object DataHelper {
     }
 
     fun getSuggestionsChat(context: Context): MutableList<Chat> {
-        var chatList = RoomHelper.getInstance().chatDao().queryByType(ChatType.SUGGESTION.name);
+        var chatList = RoomHelper.getInstance().chatDao().queryByType(listOf(ChatType.SUGGESTION.name, ChatType.USER.name))
         if (chatList.isEmpty()) {
             val praiseChat = Chat().apply {
                 this.title = context.getString(R.string.positive_energy)

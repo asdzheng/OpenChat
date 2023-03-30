@@ -22,7 +22,6 @@ import com.asdzheng.openchat.util.DataHelper
 import com.asdzheng.openchat.util.JsonUtil
 import com.asdzheng.openchat.util.PreferencesManager
 import com.bluewhaleyt.common.DynamicColorsUtil
-import com.bluewhaleyt.common.IntentUtil
 import com.bluewhaleyt.component.dialog.DialogUtil
 import com.bluewhaleyt.component.snackbar.SnackbarUtil
 import com.drake.softinput.hideSoftInput
@@ -159,7 +158,11 @@ class ChatActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_settings -> IntentUtil.intent(this, SettingsActivity::class.java)
+            R.id.menu_edit -> {
+                chat?.let {
+                    NewConversationDialog.newInstance(it).show(supportFragmentManager, "NewConversationDialog")
+                }
+            }
             R.id.menu_clear_messages -> {
                 DialogUtil(this, getString(R.string.clear)).apply {
                     setMessage(getString(R.string.clear_confirm))
@@ -331,6 +334,15 @@ class ChatActivity : BaseActivity() {
             Calendar.getInstance().timeInMillis.toDouble(),
             chat?.title, chat!!.uuid
         )
+    }
+
+    fun editChatComplete(chat: Chat) {
+        this.chat = chat
+        binding.toolbar.title = chat.title
+        binding.toolbar.subtitle = chat.prompt
+        threadPool.executor.execute {
+            RoomHelper.getInstance().chatDao().update(chat)
+        }
     }
 
 }

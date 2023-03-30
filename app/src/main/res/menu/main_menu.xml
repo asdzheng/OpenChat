@@ -11,7 +11,7 @@
         />
 
     <item
-        android:id="@+id/menu_settings"
+        android:id="@+id/menu_edit"
         android:title="@string/settings"
         app:showAsAction="ifRoom"
         android:icon="@drawable/icon_settings_24"

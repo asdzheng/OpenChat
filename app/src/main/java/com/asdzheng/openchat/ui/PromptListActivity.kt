@@ -39,6 +39,11 @@ class PromptListActivity : BaseActivity() {
         setupChatGPT()
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        loadGroupData()
+    }
+
     private fun setupChatGPT() {
         if (PreferencesManager.getOpenAIAPIKey().trim().isEmpty()) {
             SnackbarUtil.makeSnackbar(this, getString(R.string.api_key_missing))
@@ -176,7 +181,7 @@ class PromptListActivity : BaseActivity() {
             R.id.menu_add_conversation -> {
                 NewConversationDialog().show(supportFragmentManager, "NewConversationDialog")
             }
-            R.id.menu_settings -> {
+            R.id.menu_edit -> {
                 IntentUtil.intent(this, SettingsActivity::class.java)
             }
         }

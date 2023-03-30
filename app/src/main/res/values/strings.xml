@@ -11,7 +11,7 @@
     <string name="view">View</string>
     <string name="view_more">View more</string>
     <string name="share">Share</string>
-    <string name="clear">Clear Messages</string>
+    <string name="clear">Clear</string>
     <string name="clear_confirm">Are you sure to clear all of messages?</string>
     <string name="clear_desc">Clear the context and reset the current topic.</string>
     <string name="you">You</string>
@@ -68,6 +68,7 @@
     <string name="prompts_hint">The system message helps set the behavior of the assistant</string>
     <string name="new_conversation">New Conversation</string>
     <string name="delete_chat_confirmation">Do you want to delete this conversation and clear all message?</string>
+    <string name="edit">Edit</string>
 
 
 </resources>

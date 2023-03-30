@@ -17,12 +17,29 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 internal class NewConversationDialog : BottomSheetDialogFragment() {
     private lateinit var binding: DialogNewConversationBinding
 
+    companion object {
+        fun newInstance(chat: Chat): NewConversationDialog {
+            val args = Bundle()
+            args.putSerializable("data", chat)
+            val fragment = NewConversationDialog()
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = DialogNewConversationBinding.inflate(inflater)
+        val chat = arguments?.getSerializable("data")
+        if(chat != null) {
+            (chat as Chat).apply {
+                binding.etTitle.setText(title)
+                binding.etPrompt.setText(prompt)
+            }
+        }
 
         binding.dialogOk.setOnClickListener {
             var title = binding.etTitle.text.toString()
@@ -33,12 +50,19 @@ internal class NewConversationDialog : BottomSheetDialogFragment() {
             if (prompt.isEmpty()) {
                 prompt = getString(R.string.casual_prompt)
             }
-            val newChat = Chat().also {
-                it.title = title
-                it.prompt = prompt
-                it.type = DataHelper.ChatType.SUGGESTION.name
+
+            if (activity is PromptListActivity) {
+                (activity as PromptListActivity).createNewConversation(Chat().also {
+                    it.title = title
+                    it.prompt = prompt
+                    it.type = DataHelper.ChatType.USER.name
+                })
+            } else if (activity is ChatActivity && chat != null) {
+                (activity as ChatActivity).editChatComplete( (chat as Chat).also {
+                    it.title = title
+                    it.prompt = prompt
+                })
             }
-            (activity as PromptListActivity).createNewConversation(newChat)
             dismissAllowingStateLoss()
         }
 
