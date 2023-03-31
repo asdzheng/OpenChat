@@ -25,9 +25,7 @@ Clone the repository and build the app using Android Studio, or download the `.a
 
 ### Usage
 
-1. Open the app and type your mes
-
-sage in the chat box.
+1. Open the app and type your message in the chat box.
 2. Press "Send" to generate a response from the ChapGPT chatbot.
 3. The response will be displayed in the chat box, and you can continue the conversation.
 
