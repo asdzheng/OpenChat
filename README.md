@@ -11,6 +11,10 @@ I t is designed to provide an easy-to-use interface for users to interact with t
 - Support for markdown rendering of chat messages.
 - Code snippets can be copied directly from the chat box.
 
+![](doc/OpenChat-Main.png)
+![](doc/OpenChat-Chat.png)
+![](doc/sample.mp4)
+
 ## Getting Started
 
 ### Installation

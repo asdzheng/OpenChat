@@ -11,6 +11,10 @@ OpenChat 是一个基于 ChapGPT 聊天机器人的 Android 客户端，使用 G
 - 支持以 markdown 格式呈现聊天消息。
 - 代码片段可以直接从聊天框中复制。
 
+  ![](doc/OpenChat-Main.png)
+  ![](doc/OpenChat-Chat.png)
+  ![](doc/sample.mp4)
+
 ## 入门
 
 ### 安装
