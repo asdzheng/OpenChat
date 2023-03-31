@@ -1,4 +1,4 @@
-# OpenChat - 一个基于 ChapGPT 聊天机器人的 Android 客户端
+# OpenChat - 一个基于 ChapGPT API 聊天机器人的 Android 客户端
 
 OpenChat 是一个基于 ChapGPT 聊天机器人的 Android 客户端，使用 GPT-3.5 模型生成自然语言文本。它旨在为用户提供易于使用的界面，让用户能够使用他们的移动设备与 ChapGPT 聊天机器人进行交互。
 
