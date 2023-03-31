@@ -11,9 +11,11 @@ I t is designed to provide an easy-to-use interface for users to interact with t
 - Support for markdown rendering of chat messages.
 - Code snippets can be copied directly from the chat box.
 
-![](doc/OpenChat-Main.png)
-![](doc/OpenChat-Chat.png)
-![](doc/sample.mp4)
+<img src="doc/OpenChat-Main.png" alt="main" width="300" /></a>
+<img src="doc/OpenChat-Chat.png" alt="chat" width="300" /></a>
+
+<video src="https://user-images.githubusercontent.com/4972479/229124172-28901083-e1ba-491b-811e-ecc79d5182ce.mp4" width="300"/></a>
+
 
 ## Getting Started
 
@@ -23,7 +25,9 @@ Clone the repository and build the app using Android Studio, or download the `.a
 
 ### Usage
 
-1. Open the app and type your message in the chat box.
+1. Open the app and type your mes
+
+sage in the chat box.
 2. Press "Send" to generate a response from the ChapGPT chatbot.
 3. The response will be displayed in the chat box, and you can continue the conversation.
 
