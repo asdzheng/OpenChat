@@ -1,4 +1,4 @@
-# OpenChat - An Android Client for ChapGPT ChatBot [中文](../CN.md)
+# OpenChat - An Android Client for ChapGPT API [中文](CN.md)
 
 OpenChat is an Android client for ChapGPT chatbot, a tool for generating natural language text using the GPT-3.5 model. 
 I t is designed to provide an easy-to-use interface for users to interact with the ChapGPT chatbot using their mobile device.
